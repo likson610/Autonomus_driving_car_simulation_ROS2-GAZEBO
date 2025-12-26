@@ -1,32 +1,56 @@
 <launch>
+
+    <set_env name="LIBGL_ALWAYS_SOFTWARE" value="1" />
+
     <let name="urdf_path" 
          value="$(find-pkg-share robot_description)/urdf/robot_main.xacro" />
 
     <let name="rviz_config_path"
-         value="$(find-pkg-share robot_description)/rviz/urdf_config_sensors.rviz" />
+         value="$(find-pkg-share robot_bringup)/config/nav2_amcl_lidar.rviz" />
 
      <let name="gazebo_config_path" 
           value="$(find-pkg-share robot_bringup)/config/gazebo_bridge.yaml" />
 
-
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
-        <param name="robot_description"
-               value="$(command 'xacro $(var urdf_path)')" />
-    </node>
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')" />
+        <param name="use_sim_time" value="true"/> </node>
 
+   
+  <!-- <node pkg="depthimage_to_laserscan" exec="depthimage_to_laserscan_node" name="depthimage_to_laserscan">
+        <remap from="depth" to="/camera/depth/image"/>
+        <remap from="depth_camera_info" to="/camera/depth/camera_info"/>
+        <remap from="scan" to="/scan"/>
+        
+        <param name="output_frame" value="camera_depth_optical_frame"/>
+        <param name="scan_time" value="0.033"/> 
+        <param name="range_min" value="0.45"/> 
+        <param name="range_max" value="20.0"/>
+        <param name="scan_height" value="10"/>
+        
+        <param name="use_sim_time" value="true"/>
+    </node>-->
+   
+    
     <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
-        <arg name="gz_args" value="$(find-pkg-share robot_bringup)/worlds/busy_world.sdf -r"/>
+        <arg name="gz_args" value="-r -v 4 --render-engine ogre $(find-pkg-share robot_bringup)/worlds/slam.sdf"/>
+        <!--<arg name="gz_args" value="$(find-pkg-share robot_bringup)/worlds/slam.sdf -r"/> -->
     </include>
 
-
-    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description"/>
-    
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -z 0.1"/> 
     <node pkg="ros_gz_bridge" exec="parameter_bridge">
-        <param name="config_file"
-               value="$(var gazebo_config_path)" />
-    </node>
+        <param name="config_file" value="$(var gazebo_config_path)" />
+        <param name="use_sim_time" value="true"/> </node>
 
-    <node pkg="rviz2" exec="rviz2" output="screen"
-          args="-d $(var rviz_config_path)" />
+    <node pkg="rviz2" exec="rviz2" output="screen" args="-d $(var rviz_config_path)">
+        <param name="use_sim_time" value="true"/> 
+        </node>
+    
+    <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
+        <arg name="map" value="$(find-pkg-share robot_bringup)/maps/perf.yaml"/>
+        <arg name="params_file" value="$(find-pkg-share robot_bringup)/config/my_nav2_params.yaml"/>
+        <arg name="use_sim_time" value="true"/>
+    </include>
+
+    
 
 </launch>
