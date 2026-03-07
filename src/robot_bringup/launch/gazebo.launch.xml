@@ -1,7 +1,4 @@
 <launch>
-
-    <set_env name="LIBGL_ALWAYS_SOFTWARE" value="1" />
-
     <let name="urdf_path" 
          value="$(find-pkg-share robot_description)/urdf/robot_main.xacro" />
 
@@ -32,8 +29,7 @@
    
     
     <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
-        <arg name="gz_args" value="-r -v 4 --render-engine ogre $(find-pkg-share robot_bringup)/worlds/slam.sdf"/>
-        <!--<arg name="gz_args" value="$(find-pkg-share robot_bringup)/worlds/slam.sdf -r"/> -->
+        <arg name="gz_args" value="$(find-pkg-share robot_bringup)/worlds/slam.sdf -r"/>
     </include>
 
     <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -z 0.1"/> 
@@ -42,14 +38,15 @@
         <param name="use_sim_time" value="true"/> </node>
 
     <node pkg="rviz2" exec="rviz2" output="screen" args="-d $(var rviz_config_path)">
-        <param name="use_sim_time" value="true"/> 
-        </node>
+        <param name="use_sim_time" value="true"/> </node>
     
+   
     <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
         <arg name="map" value="$(find-pkg-share robot_bringup)/maps/perf.yaml"/>
-        <arg name="params_file" value="$(find-pkg-share robot_bringup)/config/my_nav2_params.yaml"/>
+        <arg name="params_file" value="$(find-pkg-share robot_bringup)/config/michal.yaml"/>
         <arg name="use_sim_time" value="true"/>
     </include>
+
 
     
 

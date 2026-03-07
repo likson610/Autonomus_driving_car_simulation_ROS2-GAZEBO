@@ -76,7 +76,7 @@
             </geometry>
         </collision>
         <inertial>
-            <mass value="0.01"/>
+            <mass value="0.1"/>
             <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
         </inertial>
     </link>
@@ -155,7 +155,7 @@
             </geometry>
             <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
         </collision>
-        <xacro:wheel_inertia m="0.05" r="${wheel_radius}" h="${wheel_length}" 
+        <xacro:wheel_inertia m="0.5" r="${wheel_radius}" h="${wheel_length}" 
                              o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
         </link>
     </xacro:macro>
