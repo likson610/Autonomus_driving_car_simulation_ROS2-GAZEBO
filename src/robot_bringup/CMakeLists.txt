@@ -13,5 +13,11 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+# Install the Python scripts into the lib directory
+install(PROGRAMS
+  scripts/nav_commander.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 
 ament_package()
