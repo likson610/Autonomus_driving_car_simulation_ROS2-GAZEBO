@@ -10,7 +10,6 @@ Do poprawnego działania symulacji wymagane jest następujące oprogramowanie:
 * **Gazebo:** Harmonic (wersja 8.10.0)
 * **RViz**
 * **NAV2**
-* **NAV2**
 
 ## 📂 Struktura Katalogów
 
