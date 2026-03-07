@@ -47,6 +47,10 @@
         <arg name="use_sim_time" value="true"/>
     </include>
 
+    <node pkg="robot_bringup" exec="nav_commander.py" name="nav_commander" output="screen">
+        <param name="use_sim_time" value="true"/>
+    </node>
+
 
     
 
