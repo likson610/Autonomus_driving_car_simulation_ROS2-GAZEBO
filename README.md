@@ -8,6 +8,9 @@ Do poprawnego działania symulacji wymagane jest następujące oprogramowanie:
 
 * **ROS 2:** Jazzy Jalisco
 * **Gazebo:** Harmonic (wersja 8.10.0)
+* **RViz**
+* **NAV2**
+* **NAV2**
 
 ## 📂 Struktura Katalogów
 
@@ -51,27 +54,7 @@ ros2 launch robot_bringup gazebo.launch.xml
 ```text
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-## ❗Uwagi❗:
-**⚙️ Parametry Fizyczne i Uwagi Techniczne**
-Masa: ok. 1200 kg
 
-**Wymiary (zdefiniowane w Xacro):**
-
-* **Wysokość (car_hight):** 2.85 m
-
-* **Szerokość (car_width):** 2.56 m
-
-* **Długość (car_length):** 6.58 m
-
-* **Promień koła (wheel_radius):** 0.52 m
-
-* **Szerokość koła (wheel_length):** 0.3 m
-
-**⚠️ Ważna uwaga dotycząca sterowania**
-
-Ze względu na dużą inercję oraz zastosowany algorytm sterowania różnicowego (DiffDrive), wymagane są duże wartości żądanych prędkości, aby zapewnić płynne sterowanie obiektem.
-
-W razie problemów ze stabilnością lub sterownością, można dostosować parametry w plikach Xacro (zmieniając xacro:property dla wymiarów lub makra definiujące inercję i masę).
 
 ## 🛠️ Polecane Narzędzia
 
