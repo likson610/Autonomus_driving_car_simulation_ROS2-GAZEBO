@@ -254,32 +254,32 @@
       <self_collide>false</self_collide>
     </model>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/cutout wall/2</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>cutout_wall</name>
       <pose>4.4451727867126465 14.673500061035156 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/cutout wall/2</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>cutout_wall_0_1</name>
       <pose>1.4433037042617798 -34.832073211669922 0 0 0 1.5528299793963634</pose>
     </include>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/cutout wall/2</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>cutout_wall_2</name>
       <pose>-5.9692797660827637 -7.1272668838500977 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/hatchback red copy/4</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>hatchback_red</name>
       <pose>1.2404580116271973 28.918100357055664 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/hatchback red copy/4</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>hatchback_red_0</name>
       <pose>-2.9827699661254883 39.087085723876953 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///home/tomek/.gz/fuel/fuel.gazebosim.org/openrobotics/models/hatchback copy/3</uri>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/cutout wall</uri>
       <name>hatchback</name>
       <pose>4.514894962310791 -16.343070983886719 0.15152139961719513 0.48812599626451925 0.00070607122508876583 -1.0076100152533454</pose>
     </include>
