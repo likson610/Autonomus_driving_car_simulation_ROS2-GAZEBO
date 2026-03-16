@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
@@ -38,7 +39,6 @@ def main():
     nav = BasicNavigator()
     nav.waitUntilNav2Active()
 
-    # Create our bridge node
     bridge_node = NavBridge(nav)
     nav_status_publisher = NavStatusPublisher()
 
