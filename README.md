@@ -10,6 +10,7 @@ Do poprawnego działania symulacji wymagane jest następujące oprogramowanie:
 * **Gazebo:** Harmonic (wersja 8.10.0)
 * **RViz**
 * **NAV2**
+* **rosbridge_server (do komunikacji z panelem kontrolnym)**
 
 ## 📂 Struktura Katalogów
 
@@ -25,7 +26,8 @@ Prawidłowa struktura powinna wyglądać następująco:
 │   └── (inne pakiety)
 ├── build/
 ├── install/
-└── log/
+├── log/
+└── control_panel/
 ```
 ## 🚀 Instalacja i Budowanie
 Przejdź do głównego katalogu swojego workspace. Następnie upewnij się, że masz załadowane globalne środowisko ROS 2 Jazzy.
@@ -53,7 +55,13 @@ ros2 launch robot_bringup gazebo.launch.xml
 ```text
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-
+## 🌐 Łączenie się z panelem kontrolnym
+Panel kontrolny należy otworzyć na dowolnej przeglądarce (testowane na Firefox). Do prawidłowego połączenia się panelu z symulacją należy otworzyć port sieciowy na którym będzie się odbywała komunikacja między serverem a symulacją.
+Port otwieramy za pomocą komendy:
+```text
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+```
+Po otworzeniu portu na stronie panelu kontrolnego powinna się pojawić informacja o udanym połączeniu.
 
 ## 🛠️ Polecane Narzędzia
 
