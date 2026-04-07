@@ -11,6 +11,7 @@ Do poprawnego działania symulacji wymagane jest następujące oprogramowanie:
 * **RViz**
 * **NAV2**
 * **rosbridge_server (do komunikacji z panelem kontrolnym)**
+* **web_video_server (do strumieniowania obrazu z kamery na stronę)**
 
 ## 📂 Struktura Katalogów
 
@@ -62,6 +63,15 @@ Port otwieramy za pomocą komendy:
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 ```
 Po otworzeniu portu na stronie panelu kontrolnego powinna się pojawić informacja o udanym połączeniu.
+
+## 📷 Włączanie podglądu kamery na panelu kontrolnym
+Server wideo otwieramy za pomocą komendy:
+
+```text
+ros2 run web_video_server web_video_server
+```
+Komende należy wpisać w osobnym terminalu. 
+Po poprawnym połączeniu web_video_server, na stronie powinniśmy zobaczyć podgląd z kamery
 
 ## 🛠️ Polecane Narzędzia
 
