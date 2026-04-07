@@ -2,208 +2,56 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4.9/lib/eventemitter2.min.js"></script>
-    
     <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/ros2d@0.10.0/build/ros2d.min.js"></script>
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
+<body>
     <h1>Panel Kontrolny Robota</h1>
-    <div id="status-box" style="padding: 10px; background: #eee;">
-        Status połączenia: <b id="status" style="color: orange;">Łączenie...</b>
+    <div id="status-box">
+        Status połączenia: <b id="status">Łączenie...</b>
     </div>
 
-    <h3>Parametry Robota</h3>
-    <p>Pozycja X: <span id="pos-x">0.00</span></p>
-    <p>Pozycja Y: <span id="pos-y">0.00</span></p>
-    <p>Prędkość liniowa: <span id="vel-lin">0.0000</span> m/s</p>
-    <p>Prędkość kątowa: <span id="vel-ang">0.0000</span> rad/s</p>
-    <p>Status Nawigacji: <span id="nav-status">Połącz ze środowiskiem ROS2</span></p>
+    <div class="top-row">
+        <div class="section">
+            <h3>Parametry Robota</h3>
+            <p>Pozycja X: <span id="pos-x">0.00</span></p>
+            <p>Pozycja Y: <span id="pos-y">0.00</span></p>
+            <p>Prędkość liniowa: <span id="vel-lin">0.0000</span> m/s</p>
+            <p>Prędkość kątowa: <span id="vel-ang">0.0000</span> rad/s</p>
+            <p>Status Nawigacji: <span id="nav-status">Połącz ze środowiskiem ROS2</span></p>
+        </div>
+
+        <div class="section">
+            <h3>Podgląd z kamery</h3>
+            <div id="camera-container">
+                <img id="camera-stream" src="http://localhost:8080/stream?topic=/camera/image_raw&type=mjpeg&quality=50&framerate=15" alt="Oczekiwanie na strumień wideo">
+            </div>
+        </div>
+    </div>
     <hr>
+    
     <h3>Nawigacja</h3>
     <label>X: <input type="number" id="goal-x" value="1.0" step="0.1"></label>
     <label>Y: <input type="number" id="goal-y" value="1.0" step="0.1"></label>
     <br><br>
-    <button onclick="sendGoal()" style="padding: 10px; background: green; color: white;">WYŚLIJ CEL</button>
+    <button onclick="sendGoal()" class="btn-green">WYŚLIJ CEL</button>
     <hr>
-    <hr>
+    
     <h3>Mapa świata</h3>
     <p>Kliknij na mapie, aby wysłać robota do celu.</p>
     <div id="map"></div>
     <hr>
+
+
     <h3>Wyślij wiadomość do ROS 2</h3>
     <input type="text" id="chat-input" placeholder="Wpisz coś...">
     <button onclick="sendChatMessage()">Wyślij</button>
     <p>Status wysyłki: <span id="send-status">-</span></p>
-    <script>
-        // nasłuchiwanie i nadawanie na port na którym znajduje się ros
-        const ros = new ROSLIB.Ros({
-            url : 'ws://localhost:9090'
-        });
 
-        const statusLabel = document.getElementById('status');
-
-        let robotMarker = null;
-        
-        // zamiana koordynatów na kwateriony przydatne do mapy
-        function getYaw(quat) {
-            var q0 = quat.w;
-            var q1 = quat.x;
-            var q2 = quat.y;
-            var q3 = quat.z;
-            var yaw = Math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
-            return -yaw * (180 / Math.PI);
-        }
-
-        ros.on('connection', () => {
-            statusLabel.innerText = 'POŁĄCZONO! 🎉';
-            statusLabel.style.color = 'green';
-        });
-
-        ros.on('error', () => {
-            statusLabel.innerText = 'BŁĄD POŁĄCZENIA ❌';
-            statusLabel.style.color = 'red';
-        });
-
-        // topiki od których będziemy odbierać wiadomości bądź wysyłać do nich wiadomości
-        const odomTopic = new ROSLIB.Topic({
-            ros : ros,
-            name : '/odom',
-            messageType : 'nav_msgs/msg/Odometry'
-        });
-        const amclPoseTopic = new ROSLIB.Topic({
-            ros : ros,
-            name : '/amcl_pose',
-            messageType : 'geometry_msgs/msg/PoseWithCovarianceStamped'
-        });
-        const velocityReader = new ROSLIB.Topic({
-            ros : ros,
-            name : '/cmd_vel_smoothed',
-            messageType : 'geometry_msgs/msg/Twist'
-        });
-
-        const navStatus = new ROSLIB.Topic({
-            ros : ros,
-            name : '/nav_status',
-            messageType : 'std_msgs/msg/String'
-        });
-        const chatTopic = new ROSLIB.Topic({
-            ros : ros,
-            name : '/web_chat',
-            messageType : 'std_msgs/msg/String'
-        });
-        //testowa funkcja do wysyłania wiadomości do rosa
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const status = document.getElementById('send-status');
-            
-            const message = new ROSLIB.Message({
-                data: input.value
-            });
-
-            chatTopic.publish(message);
-            
-            status.innerText = "Wysłano: " + input.value;
-            input.value = ""; 
-        }
-        //nasłuchiwanie topicu amcl do wyświetlania pozycji pojazdu na licznikach i na mapie
-        amclPoseTopic.subscribe((message) => {
-            document.getElementById('pos-x').innerText = message.pose.pose.position.x.toFixed(2);
-            document.getElementById('pos-y').innerText = message.pose.pose.position.y.toFixed(2);
-        
-            if (robotMarker) {
-                robotMarker.x = message.pose.pose.position.x;
-                robotMarker.y = -message.pose.pose.position.y; 
-            }
-        });
-
-        // odbieranie prędkości
-        velocityReader.subscribe((message) => {
-            document.getElementById('vel-lin').innerText = message.linear.x.toFixed(4);
-            document.getElementById('vel-ang').innerText = message.angular.z.toFixed(4);
-        });
-
-        // nav status
-        navStatus.subscribe((message) => {
-            document.getElementById('nav-status').innerText = message.data;
-        });
-
-    const goalTopic = new ROSLIB.Topic({
-        ros : ros,
-        name : '/goal_pose',
-        messageType : 'geometry_msgs/PoseStamped'
-    });
-    // mapa z symulacji
-    var viewer = new ROS2D.Viewer({
-        divID : 'map',
-        width : 500,
-        height : 800
-    });
-    
-    var gridClient = new ROS2D.OccupancyGridClient({
-        ros : ros,
-        rootObject : viewer.scene,
-        continuous: true 
-    });
-    robotMarker = new createjs.Shape();
-    robotMarker.graphics.beginFill("red").drawCircle(0, 0, 0.2);
-    viewer.scene.addChild(robotMarker);
-
-    gridClient.on('change', function() {
-        viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-        viewer.shift(gridClient.currentGrid.pose.position.x, gridClient.currentGrid.pose.position.y);
-        if (robotMarker) {
-                viewer.scene.setChildIndex(robotMarker, viewer.scene.numChildren - 1);
-            }
-    });
-
-    var mouseDown = false;
-    viewer.scene.addEventListener('stagemousedown', function(event) {
-        mouseDown = true;
-    });
-
-    viewer.scene.addEventListener('stagemouseup', function(event) {
-        if (mouseDown) {
-            var pos = viewer.scene.globalToRos(event.stageX, event.stageY);
-            sendGoalFromMap(pos.x, pos.y);
-            mouseDown = false;
-        }
-    });
-
-    function sendGoalFromMap(x, y) {
-        const pose = new ROSLIB.Message({
-            header: {
-                frame_id: 'map',
-                stamp: { secs: 0, nsecs: 0 }
-            },
-            pose: {
-                position: { x: x, y: y, z: 0 },
-                orientation: { x: 0, y: 0, z: 0, w: 1 }
-            }
-        });
-        goalTopic.publish(pose);
-    }
-    function sendGoal() {
-        const x = parseFloat(document.getElementById('goal-x').value);
-        const y = parseFloat(document.getElementById('goal-y').value);
-
-        const pose = new ROSLIB.Message({
-            header: {
-                frame_id: 'map',
-                stamp: { secs: 0, nsecs: 0 }
-            },
-            pose: {
-                position: { x: x, y: y, z: 0 },
-                orientation: { x: 0, y: 0, z: 0, w: 1 }
-            }
-        });
-
-        goalTopic.publish(pose);
-        console.log("Goal sent to ROS: ", x, y);
-    }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
